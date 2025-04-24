@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+# .env
+.env.local
+.env.production
+*.log
+
+# Migrations cache (if needed)
+alembic/versions/*.pyc
+
+# VS Code and PyCharm settings
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Uploads & temporary files
+uploads/
+*.sqlite3

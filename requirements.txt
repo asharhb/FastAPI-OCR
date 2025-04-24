@@ -1,0 +1,13 @@
+fastapi[standard]
+gunicorn
+uvicorn
+jinja2
+pytest
+requests
+pre-commit
+python-dotenv
+python-multipart
+aiofiles
+pillow
+pytesseract
+pdf2image
