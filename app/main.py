@@ -33,6 +33,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Create CSS file
 with open("static/css/style.css", "w") as f:
     f.write("""
+ 
     :root {
         --primary-color: #4285f4;
         --primary-hover: #2b6cb0;
@@ -138,11 +139,22 @@ with open("static/css/style.css", "w") as f:
         text-align: center;
     }
 
-    .file-name {
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        color: #666;
-    }
+.file-name {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    color: var(--primary-color);
+    background-color: #e8f0fe;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(66, 133, 244, 0.4);
+    font-weight: 600;
+}
+            
+.file-name span{
+    color: black;
+}
 
     .language-select {
         width: 100%;
@@ -279,6 +291,7 @@ with open("static/css/style.css", "w") as f:
             font-size: 2rem;
         }
     }
+    
     """)
 
 # Create JS file
@@ -363,6 +376,7 @@ downloadBtn.addEventListener('click', function() {
 # Create HTML template file
 with open("templates/index.html", "w") as f:
     f.write("""
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -391,7 +405,9 @@ with open("templates/index.html", "w") as f:
                         <p id="file-name" class="file-name" style="display: none;"></p>
                     </div>
                 </div>
-
+{% if uploaded_filename %}              
+<p class="file-name" style="display: block;">Uploaded File: <span>{{ uploaded_filename }}</span></p>
+{% endif %}
                 <div class="form-group">
                     <label for="language">Select Language</label>
                     <select id="language" name="language" class="language-select">
@@ -453,6 +469,7 @@ with open("templates/index.html", "w") as f:
     <script src="{{ url_for('static', path='/js/script.js') }}"></script>
 </body>
 </html>
+    
     """)
 
 # Define available languages
@@ -528,7 +545,8 @@ async def extract_text(request: Request, file: UploadFile = File(...), language:
                 {
                     "request": request,
                     "error": f"Selected language '{language}' is not supported.",
-                    "is_processing": False
+                    "is_processing": False,
+                    "uploaded_filename": file.filename
                 }
             )
 
@@ -549,7 +567,8 @@ async def extract_text(request: Request, file: UploadFile = File(...), language:
                 {
                     "request": request,
                     "error": "This file format is not supported. Please upload a PDF or image file.",
-                    "is_processing": False
+                    "is_processing": False,
+                    "uploaded_filename": file.filename
                 }
             )
 
@@ -560,7 +579,8 @@ async def extract_text(request: Request, file: UploadFile = File(...), language:
                 {
                     "request": request,
                     "error": "The uploaded file contains no text to extract.",
-                    "is_processing": False
+                    "is_processing": False,
+                    "uploaded_filename": file.filename
                 }
             )
 
@@ -570,20 +590,22 @@ async def extract_text(request: Request, file: UploadFile = File(...), language:
             {
                 "request": request,
                 "extracted_text": extracted_text,
-                "is_processing": False
+                "is_processing": False,
+                "uploaded_filename": file.filename
             }
         )
 
     except Exception as e:
         # Return template with error message
-        return templates.TemplateResponse(
-            "index.html",
-            {
-                "request": request,
-                "error": f"Error processing file: {str(e)}",
-                "is_processing": False
-            }
-        )
+            return templates.TemplateResponse(
+                "index.html",
+                {
+                    "request": request,
+                    "error": f"Error processing file: {str(e)}",
+                    "is_processing": False,
+                    "uploaded_filename": file.filename
+                }
+            )
 
 
 if __name__ == "__main__":
