@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y \
     libxrender-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Set environment variable to help pytesseract find language data
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
+
 # Set working directory
 WORKDIR /app
 
