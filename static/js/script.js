@@ -52,4 +52,25 @@
             }, 2000);
         });
     });
+            
+            // Handle text download
+const downloadBtn = document.getElementById('download-btn');
+downloadBtn.addEventListener('click', function() {
+    const resultText = document.getElementById('result-text').textContent;
+
+    // Create a Blob with the text content
+    const blob = new Blob([resultText], { type: 'text/plain' });
+
+    // Create a temporary anchor element
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'extracted_text.txt'; // File name for download
+    document.body.appendChild(a);
+
+    // Trigger the download
+    a.click();
+
+    // Clean up
+    document.body.removeChild(a);
+});
     

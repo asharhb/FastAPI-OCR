@@ -337,6 +337,27 @@ with open("static/js/script.js", "w") as f:
             }, 2000);
         });
     });
+            
+            // Handle text download
+const downloadBtn = document.getElementById('download-btn');
+downloadBtn.addEventListener('click', function() {
+    const resultText = document.getElementById('result-text').textContent;
+
+    // Create a Blob with the text content
+    const blob = new Blob([resultText], { type: 'text/plain' });
+
+    // Create a temporary anchor element
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'extracted_text.txt'; // File name for download
+    document.body.appendChild(a);
+
+    // Trigger the download
+    a.click();
+
+    // Clean up
+    document.body.removeChild(a);
+});
     """)
 
 # Create HTML template file
@@ -409,14 +430,19 @@ with open("templates/index.html", "w") as f:
 
         {% if extracted_text %}
         <div id="result-card" class="card result-card active">
-            <div class="result-header">
-                <h2>Extracted Text</h2>
-                <button id="copy-btn" class="copy-btn">
-                    <i class="fas fa-copy"></i> Copy Text
-                </button>
-            </div>
-            <div id="result-text" class="result-content">{{ extracted_text }}</div>
+    <div class="result-header">
+        <h2>Extracted Text</h2>
+        <div>
+            <button id="copy-btn" class="copy-btn">
+                <i class="fas fa-copy"></i> Copy Text
+            </button>
+            <button id="download-btn" class="copy-btn">
+                <i class="fas fa-download"></i> Download Text
+            </button>
         </div>
+    </div>
+    <div id="result-text" class="result-content">{{ extracted_text }}</div>
+</div>
         {% endif %}
     </div>
     
@@ -512,10 +538,31 @@ async def extract_text(request: Request, file: UploadFile = File(...), language:
         if file.filename.lower().endswith('.pdf'):
             # Process PDF file
             extracted_text = extract_text_from_pdf(content, language)
-        else:
+        elif file.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
             # Process image file
             image = Image.open(io.BytesIO(content))
             extracted_text = pytesseract.image_to_string(image, lang=language)
+        else:
+            # Unsupported file format
+            return templates.TemplateResponse(
+                "index.html",
+                {
+                    "request": request,
+                    "error": "This file format is not supported. Please upload a PDF or image file.",
+                    "is_processing": False
+                }
+            )
+
+        # Check if extracted text is empty
+        if not extracted_text.strip():
+            return templates.TemplateResponse(
+                "index.html",
+                {
+                    "request": request,
+                    "error": "The uploaded file contains no text to extract.",
+                    "is_processing": False
+                }
+            )
 
         # Return template with extracted text
         return templates.TemplateResponse(

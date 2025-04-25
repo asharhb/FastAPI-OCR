@@ -66,14 +66,19 @@
 
         {% if extracted_text %}
         <div id="result-card" class="card result-card active">
-            <div class="result-header">
-                <h2>Extracted Text</h2>
-                <button id="copy-btn" class="copy-btn">
-                    <i class="fas fa-copy"></i> Copy Text
-                </button>
-            </div>
-            <div id="result-text" class="result-content">{{ extracted_text }}</div>
+    <div class="result-header">
+        <h2>Extracted Text</h2>
+        <div>
+            <button id="copy-btn" class="copy-btn">
+                <i class="fas fa-copy"></i> Copy Text
+            </button>
+            <button id="download-btn" class="copy-btn">
+                <i class="fas fa-download"></i> Download Text
+            </button>
         </div>
+    </div>
+    <div id="result-text" class="result-content">{{ extracted_text }}</div>
+</div>
         {% endif %}
     </div>
     
