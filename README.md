@@ -67,4 +67,12 @@ A lightweight and high-performance web application built with FastAPI, offering 
 
 ---
 
+## 🖥 Interface Preview
+
+<p align="center">
+  <img src="https://res.cloudinary.com/ddbnshcow/image/upload/v1746772415/Screenshot_from_2025-05-09_11-31-04_luegcs.png" alt="FastAPI Tesseract OCR Interface Preview" />
+</p>
+
+---
+
 Feel free to contribute or raise issues for improvements!
